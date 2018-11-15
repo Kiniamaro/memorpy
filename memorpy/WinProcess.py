@@ -39,12 +39,12 @@ class WinProcess(BaseProcess):
         super(WinProcess, self).__init__()
         if pid:
             self._open(int(pid), debug=debug)
-            
+
         elif name:
             self._open_from_name(name, debug=debug)
         else:
             raise ValueError("You need to instanciate process with at least a name or a pid")
-        
+
         if self.is_64bit():
             si = self.GetNativeSystemInfo()
             self.max_addr = si.lpMaximumApplicationAddress
@@ -82,7 +82,6 @@ class WinProcess(BaseProcess):
 
         psapi.EnumProcesses(byref(lpidProcess), cb, byref(cbNeeded))
         nReturned = cbNeeded.value/sizeof(c_ulong())
-
         pidProcess = [i for i in lpidProcess][:nReturned]
         for pid in pidProcess:
             proc={ "pid": int(pid) }
@@ -183,7 +182,7 @@ class WinProcess(BaseProcess):
         return old_protect.value
 
     def iter_region(self, start_offset=None, end_offset=None, protec=None, optimizations=None):
-        
+
         offset = start_offset or self.min_addr
         end_offset = end_offset or self.max_addr
 
@@ -264,7 +263,7 @@ class WinProcess(BaseProcess):
             # address += bytesread.value
         return data
 
-   
+
     def list_modules(self):
         module_list = []
         if self.pid is not None:
@@ -296,7 +295,7 @@ class WinProcess(BaseProcess):
             if module in m.szExePath.split('\\'):
                 return True
         return False
-    
+
 
     def get_instruction(self, address):
         """

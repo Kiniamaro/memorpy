@@ -90,6 +90,7 @@ class MemWorker(object):
             yield a
 
     def parse_re_function(self, b, value, offset):
+        b = b.decode("utf-8")
         for name, regex in value:
             for res in regex.finditer(b):
                 yield name, self.Address(offset+res.start(), 'bytes')
@@ -104,6 +105,7 @@ class MemWorker(object):
                 """
 
     def parse_float_function(self, b, value, offset):
+        b = b.decode("utf-8")
         for index in range(0, len(b)):
             try:
                 structtype, structlen = utils.type_unpack('float')
@@ -115,16 +117,19 @@ class MemWorker(object):
                 pass
 
     def parse_named_groups_function(self, b, value, offset=None):
+        b = b.decode("utf-8")
         for name, regex in value:
             for res in regex.finditer(b):
                 yield name, res.groupdict()
 
     def parse_groups_function(self, b, value, offset=None):
+        b = b.decode("utf-8")
         for name, regex in value:
             for res in regex.finditer(b):
                 yield name, res.groups()
 
     def parse_any_function(self, b, value, offset):
+        b = b.decode("utf-8")
         index = b.find(value)
         while index != -1:
             soffset = offset + index
@@ -132,17 +137,17 @@ class MemWorker(object):
             index = b.find(value, index + 1)
 
     def mem_search(self, value, ftype = 'match', protec = PAGE_READWRITE | PAGE_READONLY, optimizations=None, start_offset = None, end_offset = None):
-        """ 
+        """
                 iterator returning all indexes where the pattern has been found
         """
-        
+
         # pre-compile regex to run faster
         if ftype == 're' or ftype == 'groups' or ftype == 'ngroups':
-            
+
             # value should be an array of regex
             if type(value) is not list:
                 value = [value]
-            
+
             tmp = []
             for reg in value:
                 if type(reg) is tuple:
@@ -168,8 +173,8 @@ class MemWorker(object):
 
         # different functions avoid if statement before parsing the buffer
         if ftype == 're':
-            func = self.parse_re_function        
-        
+            func = self.parse_re_function
+
         elif ftype == 'groups':
             func = self.parse_groups_function
 

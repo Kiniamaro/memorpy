@@ -15,7 +15,7 @@ here = os.path.dirname(__file__)
 
 exec(open(os.path.join(here, 'memorpy', 'version.py')).read())
 setup(name = "memorpy",
-    version = version_string, #  noqa
+    version = 1.7,
     description = "Python library using ctypes to search/edit windows/linux programs memory",
     author = "Victor Dyotte",
     author_email = "vdyotte@gmail.com",
